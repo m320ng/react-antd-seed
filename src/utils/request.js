@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { message } from 'antd';
 
 const instance = axios.create();
 instance.defaults.baseURL = process.env.REACT_APP_BASE_URL;
@@ -18,7 +17,6 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   response => response,
   error => {
-    message.error(`(${error.response.status}) ${error.response.data.message}`);
     return Promise.reject(error);
   },
 );

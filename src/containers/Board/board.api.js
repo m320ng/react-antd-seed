@@ -1,7 +1,7 @@
 import request from 'utils/request';
 
 export function getPostsAPI() {
-  return request.get('v1/posts?limit=100');
+  return request.get('v1/posts?limit=15');
 }
 
 export function postPostsAPI(payload) {

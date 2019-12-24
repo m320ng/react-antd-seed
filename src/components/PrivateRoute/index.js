@@ -1,8 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router-dom';
 
-function PrivateRoute({ component: Component, ...rest }) {
+const PrivateRoute = ({ component: Component, ...rest }) => {
   return (
     <Route
       {...rest}
@@ -11,10 +10,6 @@ function PrivateRoute({ component: Component, ...rest }) {
       }
     />
   );
-}
-
-PrivateRoute.propTypes = {
-  component: PropTypes.any,
 };
 
 export default PrivateRoute;

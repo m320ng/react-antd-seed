@@ -1,6 +1,7 @@
 import produce from 'immer';
 import jwtDecode from 'jwt-decode';
-import { POST_SIGN_IN_SUCCESS } from 'containers/SignIn/signin.constants';
+
+import { POST_SIGN_IN_SUCCESS } from './containers/SignIn/signin.reducer';
 
 const token = localStorage.getItem('token');
 const userState = token ? { user: jwtDecode(token) } : {};
@@ -13,10 +14,12 @@ const appReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
       case POST_SIGN_IN_SUCCESS:
-        const newToken = action.payload.data.access_token;
+        const newToken = action.payload.data.token;
         localStorage.setItem('token', newToken);
         draft.user = jwtDecode(newToken);
-        break;
+        return draft;
+      default:
+        return draft;
     }
   });
 

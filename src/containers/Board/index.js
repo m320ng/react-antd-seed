@@ -1,28 +1,22 @@
-import React, { memo, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Helmet } from 'react-helmet';
-import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
 import { Button } from 'antd';
-
-import { useInjectSaga } from 'utils/injectSaga';
-import { useInjectReducer } from 'utils/injectReducer';
-import { getPostsAction, handleModalShowAction } from './board.actions';
-import reducer from './board.reducer';
-import saga from './board.saga';
+import { SideSheet, Paragraph } from 'evergreen-ui';
+import { getPostsAction, handleModalShowAction } from './board.reducer';
 
 import WritePostModal from './WritePostModal';
 import PostTable from './PostTable';
 
-const key = 'board';
+const Board = () => {
+  const [isShow, setIsShow] = useState(false);
 
-function Board(props) {
-  useInjectReducer({ key, reducer });
-  useInjectSaga({ key, saga });
+  const dispatch = useDispatch();
+  const getPosts = () => dispatch(getPostsAction());
+  const handleModalShow = () => dispatch(handleModalShowAction());
 
   useEffect(() => {
-    props.getPosts();
+    getPosts();
   }, []);
 
   return (
@@ -32,35 +26,18 @@ function Board(props) {
         <meta name="description" content="Description of Board" />
       </Helmet>
       <WritePostModal />
+      <SideSheet isShown={isShow} onCloseComplete={() => setIsShow(false)}>
+        <Paragraph margin={40}>Basic Example</Paragraph>
+      </SideSheet>
       <div style={{ marginBottom: 16 }}>
-        <Button type="primary" onClick={props.handleModalShow}>
+        <Button type="primary" onClick={handleModalShow}>
           Write
         </Button>
+        <Button onClick={() => setIsShow(true)}>Show Basic Side Sheet</Button>{' '}
       </div>
       <PostTable />
     </>
   );
-}
-
-Board.propTypes = {
-  getPosts: PropTypes.func,
-  handleModalShow: PropTypes.func,
 };
 
-const mapStateToProps = createStructuredSelector({
-});
-
-const mapDispatchToProps = dispatch => ({
-  getPosts: () => dispatch(getPostsAction()),
-  handleModalShow: () => dispatch(handleModalShowAction()),
-});
-
-const withConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-);
-
-export default compose(
-  withConnect,
-  memo,
-)(Board);
+export default Board;

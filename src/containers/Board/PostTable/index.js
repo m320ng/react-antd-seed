@@ -1,12 +1,8 @@
-import React, { memo } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
-import { Table, Avatar } from 'antd';
+import React from 'react';
+import { Table, Avatar, Pagination } from 'antd';
+import { useSelector } from 'react-redux';
 import urljoin from 'url-join';
-
-import { makeSelectPostList } from '../board.selectors';
+import Moment from 'react-moment';
 
 const columns = [
   {
@@ -15,14 +11,14 @@ const columns = [
     key: 'id',
   },
   {
-    title: 'Title',
-    dataIndex: 'title',
-    key: 'title',
+    title: '이름',
+    dataIndex: 'name',
+    key: 'name',
   },
   {
-    title: 'Text',
-    dataIndex: 'text',
-    key: 'text',
+    title: '계정',
+    dataIndex: 'account',
+    key: 'account',
     render: text => <pre style={{ marginBottom: 0, maxHeight: 100 }}>{text}</pre>,
   },
   {
@@ -33,42 +29,57 @@ const columns = [
       photo ? (
         <Avatar src={`${urljoin(process.env.REACT_APP_BASE_URL, photo)}`} shape="square" />
       ) : (
-          <Avatar icon="file-image" shape="square" />
-        ),
+        <Avatar icon="file-image" shape="square" />
+      ),
   },
   {
-    title: 'Created At',
-    dataIndex: 'createdAt',
-    key: 'createdAt',
-    render: time => <span>{time}</span>,
+    title: '생성일',
+    dataIndex: 'created',
+    key: 'created',
+    render: time => <Moment format="YYYY-MM-DD HH:mm:ss">{time}</Moment>,
   },
   {
-    title: 'Updated At',
-    dataIndex: 'updatedAt',
-    key: 'updatedAt',
-    render: time => <span>{time}</span>,
+    title: '수정일',
+    dataIndex: 'updated',
+    key: 'updated',
+    render: time => <Moment format="YYYY-MM-DD HH:mm:ss">{time}</Moment>,
   },
 ];
 
-function PostTable(props) {
-  return (
-    <Table dataSource={props.postList} columns={columns} />
-  )
+function itemRender(current, type, originalElement) {
+  if (type === 'prev') {
+    return <a>이전</a>;
+  }
+  if (type === 'next') {
+    return <a>다음</a>;
+  }
+  return originalElement;
 }
 
-PostTable.propTypes = {
-  postList: PropTypes.array,
+const PostTable = () => {
+  const postList = useSelector(({ board }) => board.postList);
+  const loading = useSelector(({ board }) => board.loading);
+
+  const page = useSelector(({ board }) => board.page);
+  const total = useSelector(({ board }) => board.total);
+  console.log('page', page);
+  console.log('total', total);
+
+  return (
+    <>
+      <div style={{ background: '#ffffff' }}>
+        <Table dataSource={postList} columns={columns} loading={loading} pagination={false} bordered={true} />
+      </div>
+      <div style={{ textAlign: 'center' }}>
+        <Pagination
+          current={page}
+          total={total}
+          itemRender={itemRender}
+          style={{ display: 'inline-block', margin: '10px 0px' }}
+        />
+      </div>
+    </>
+  );
 };
 
-const mapStateToProps = createStructuredSelector({
-  postList: makeSelectPostList(),
-});
-
-const withConnect = connect(
-  mapStateToProps,
-);
-
-export default compose(
-  withConnect,
-  memo,
-)(PostTable);
+export default PostTable;

@@ -11,20 +11,19 @@ import mainRoutes from 'routes/mainRoutes';
 export default function App() {
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Helmet
-        titleTemplate="%s - Create React Ant Design Boilerplate"
-        defaultTitle="Create React Ant Design Boilerplate"
-      >
-        <meta name="description" content="A Create React Ant Design Boilerplate application" />
+      <Helmet titleTemplate="%s - UI Test" defaultTitle="UI Test">
+        <meta name="description" content="A UI Test Application" />
       </Helmet>
       <Header />
       <Layout>
         <Sider />
         <Layout>
           <Layout.Content style={{ margin: '16px' }}>
-            <Switch>{mainRoutes.map(route => (route.auth ? <PrivateRoute {...route} /> : <Route {...route} />))}</Switch>
+            <Switch>
+              {mainRoutes.map(route => (route.auth ? <PrivateRoute {...route} /> : <Route {...route} />))}
+            </Switch>
           </Layout.Content>
-          <Layout.Footer style={{ textAlign: 'center' }}>Create React Ant Design Boilerplate</Layout.Footer>
+          <Layout.Footer style={{ textAlign: 'center' }}>UI Test</Layout.Footer>
         </Layout>
       </Layout>
     </Layout>

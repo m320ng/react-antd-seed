@@ -1,17 +1,7 @@
-import React, { memo } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Button, Modal, Input, Icon, Upload } from 'antd';
 
-import {
-  makeSelectModalVisible,
-  makeSelectModalLoading,
-  makeSelectTitle,
-  makeSelectText,
-  makeSelectPhoto,
-} from '../board.selectors';
 import {
   handleModalCancelAction,
   postPostsAction,
@@ -19,84 +9,49 @@ import {
   onChangeTextAction,
   onChangeAddPhotoAction,
   onChangeDelPhotoAction,
-} from '../board.actions';
+} from '../board.reducer';
 
-function WritePostModal(props) {
+const WritePostModal = () => {
+  const modalVisible = useSelector(({ board }) => board.modalVisible);
+  const modalLoading = useSelector(({ board }) => board.modalLoading);
+  const title = useSelector(({ board }) => board.postForm.title);
+  const text = useSelector(({ board }) => board.postForm.text);
+  const photo = useSelector(({ board }) => board.postForm.photo);
+
+  const dispatch = useDispatch();
+  const postPosts = () => dispatch(postPostsAction());
+  const handleModalCancel = () => dispatch(handleModalCancelAction());
+  const onChangeTitle = e => dispatch(onChangeTitleAction(e.target.value));
+  const onChangeText = e => dispatch(onChangeTextAction(e.target.value));
+  const onChangeAddPhoto = file => {
+    dispatch(onChangeAddPhotoAction(file));
+    return false;
+  };
+  const onChangeDelPhoto = () => dispatch(onChangeDelPhotoAction());
+
   return (
     <Modal
       title="Write a Post"
-      visible={props.modalVisible}
-      onOk={props.postPosts}
-      confirmLoading={props.modalLoading}
-      onCancel={props.handleModalCancel}
+      visible={modalVisible}
+      onOk={postPosts}
+      confirmLoading={modalLoading}
+      onCancel={handleModalCancel}
     >
       <div style={{ marginBottom: 16 }}>
-        <Input placeholder="Title" onChange={props.onChangeTitle} value={props.title} />
+        <Input placeholder="Title" onChange={onChangeTitle} value={title} />
       </div>
       <div style={{ marginBottom: 16 }}>
-        <Input.TextArea
-          rows={4}
-          placeholder="Write some text..."
-          onChange={props.onChangeText}
-          value={props.text}
-        />
+        <Input.TextArea rows={4} placeholder="Write some text..." onChange={onChangeText} value={text} />
       </div>
       <div style={{ marginBottom: 16 }}>
-        <Upload
-          onRemove={props.onChangeDelPhoto}
-          beforeUpload={props.onChangeAddPhoto}
-          fileList={props.photo}
-          accept="image/*"
-        >
+        <Upload onRemove={onChangeDelPhoto} beforeUpload={onChangeAddPhoto} fileList={photo} accept="image/*">
           <Button>
             <Icon type="upload" /> Select a Photo
-            </Button>
+          </Button>
         </Upload>
       </div>
     </Modal>
-  )
-}
-
-WritePostModal.propTypes = {
-  modalVisible: PropTypes.bool,
-  modalLoading: PropTypes.bool,
-  title: PropTypes.string,
-  text: PropTypes.string,
-  photo: PropTypes.array,
-  postPosts: PropTypes.func,
-  handleModalCancel: PropTypes.func,
-  onChangeTitle: PropTypes.func,
-  onChangeText: PropTypes.func,
-  onChangeAddPhoto: PropTypes.func,
-  onChangeDelPhoto: PropTypes.func,
+  );
 };
 
-const mapStateToProps = createStructuredSelector({
-  modalVisible: makeSelectModalVisible(),
-  modalLoading: makeSelectModalLoading(),
-  title: makeSelectTitle(),
-  text: makeSelectText(),
-  photo: makeSelectPhoto(),
-});
-
-const mapDispatchToProps = dispatch => ({
-  postPosts: () => dispatch(postPostsAction()),
-  handleModalCancel: () => dispatch(handleModalCancelAction()),
-  onChangeTitle: e => dispatch(onChangeTitleAction(e.target.value)),
-  onChangeText: e => dispatch(onChangeTextAction(e.target.value)),
-  onChangeAddPhoto: file => {
-    dispatch(onChangeAddPhotoAction(file));
-    return false;
-  },
-  onChangeDelPhoto: () => dispatch(onChangeDelPhotoAction()),
-});
-
-const withConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-);
-
-export default compose(
-  withConnect,
-  memo,
-)(WritePostModal);
+export default WritePostModal;

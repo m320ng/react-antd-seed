@@ -1,8 +1,7 @@
 import { takeLatest, call, put, select } from 'redux-saga/effects';
-import { getPostsSuccess, getPostsFailure, postPostsFailure, postPostsSuccess, getPostsAction } from './board.actions';
-import { GET_POSTS_REQUEST, POST_POSTS_REQUEST } from './board.constants';
+import { GET_POSTS_REQUEST, POST_POSTS_REQUEST } from './board.reducer';
+import { getPostsSuccess, getPostsFailure, postPostsFailure, postPostsSuccess, getPostsAction } from './board.reducer';
 import { getPostsAPI, postPostsAPI } from './board.api';
-import { makeSelectTitle, makeSelectText, makeSelectPhoto } from './board.selectors';
 
 export function* getPostsSaga() {
   try {
@@ -13,10 +12,15 @@ export function* getPostsSaga() {
   }
 }
 
+// selector
+const selectTitle = ({ board }) => board.postForm.title;
+const selectText = ({ board }) => board.postForm.text;
+const selectPhoto = ({ board }) => board.postForm.photo;
+
 export function* postPostsSaga() {
-  const title = yield select(makeSelectTitle());
-  const text = yield select(makeSelectText());
-  const photoList = yield select(makeSelectPhoto());
+  const title = yield select(selectTitle());
+  const text = yield select(selectText());
+  const photoList = yield select(selectPhoto());
   const photo = photoList[0];
 
   try {
