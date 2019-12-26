@@ -1,35 +1,37 @@
-# 설치
+# react
 
-## node.js (10.x 이상)
+## 설치
 
-<https://nodejs.org/>
+node.js (10.x 이상)
 
-## yarn (빠른 npm)
+- <https://nodejs.org/>
 
-<https://yarnpkg.com/>
+yarn (빠른 npm)
 
-## Install Packages
+- <https://yarnpkg.com/>
+
+Install Packages
 
 ```
 yarn install
 ```
 
-## Run
+Run
 
 ```
 yarn start
 ```
 
-## Redux 개발자툴
+Redux 개발자툴
 
-[크롬 Extention](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd)
+- [크롬 Extention](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd)
 
-# UI Components
+## UI Components
 
-## Ant Design
+Ant Design
 
-<https://ant.design/docs/react/introduce>
+- <https://ant.design/docs/react/introduce>
 
-## Evergreen UI
+Evergreen UI
 
-<https://evergreen.segment.com/>
+- <https://evergreen.segment.com/>
