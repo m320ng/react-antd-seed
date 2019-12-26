@@ -2,27 +2,27 @@
 
 ## 설치
 
-node.js (10.x 이상)
+node.js 설치 (10.x 이상)
 
 - <https://nodejs.org/>
 
-yarn (빠른 npm)
+yarn 설치 (빠른 npm)
 
 - <https://yarnpkg.com/>
 
-Install Packages
+패키지 인스톨
 
 ```
 yarn install
 ```
 
-Run
+실행
 
 ```
 yarn start
 ```
 
-Redux 개발자툴
+Redux Chrome 개발자툴 설치
 
 - [크롬 Extention](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd)
 
