@@ -35,3 +35,9 @@ Ant Design
 Evergreen UI
 
 - <https://evergreen.segment.com/>
+
+## 참고 자료
+
+es6 문법
+
+- <https://itstory.tk/entry/JavaScript-ES6-%EB%AC%B8%EB%B2%95-%EC%A0%95%EB%A6%AC>

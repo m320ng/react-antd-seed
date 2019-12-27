@@ -1,4 +1,5 @@
 import Board from 'containers/Board';
+import Users from 'containers/Users';
 import SignIn from 'containers/SignIn';
 import NotFound from 'containers/NotFound';
 
@@ -9,6 +10,15 @@ const mainRoutes = [
     name: 'Home',
     icon: 'home',
     component: Board,
+    auth: true,
+    permission: 'admin',
+  },
+  {
+    exact: true,
+    path: '/users',
+    name: '회원관리',
+    icon: 'member',
+    component: Users,
     auth: true,
     permission: 'admin',
   },
