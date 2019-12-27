@@ -5,7 +5,7 @@ import { Button, Pagination } from 'antd';
 import { SideSheet, Paragraph } from 'evergreen-ui';
 import { getPostsAction, handleModalShowAction } from './users.reducer';
 
-//import CreateModal from './CreateModal';
+import WriteModal from './WriteModal';
 import ListTable from './ListTable';
 
 function itemRender(current, type, originalElement) {
@@ -25,26 +25,43 @@ const Users = () => {
   const pagingRequest = useSelector(({ users }) => users.pagingRequest);
   const loading = useSelector(({ users }) => users.loading);
 
-  const page = useSelector(({ users }) => users.page);
+  //const page = useSelector(({ users }) => users.page);
   //const total = useSelector(({ users }) => users.total);
   //const pages = pagingList.pages;
   //console.log(pagingRequest);
-  console.log(pagingList);
 
   const dispatch = useDispatch();
-  const getPosts = () => dispatch(getPostsAction());
+  const getPosts = pagingRequest => dispatch(getPostsAction(pagingRequest));
   const handleModalShow = () => dispatch(handleModalShowAction());
 
   const onPageChange = (page, pageSize) => {
     //pagingRequest.page = page;
-    //console.log(pageSize);
+    console.log('page', page);
+    console.log('pageSize', pageSize);
     //pagingRequest.limit = pageSize;
-    //getPosts();
+    //getPosts(pagingRequest);
+    /*
+    setPagingRequest({
+      page: page,
+      limit: 20,
+    });
+    */
+    getPosts({
+      page: page,
+      limit: 20,
+    });
   };
 
   useEffect(() => {
-    getPosts();
+    console.log('pagingRequest', pagingRequest);
+    getPosts({
+      page: 1,
+      limit: 20,
+    });
   }, []);
+
+  console.log(pagingRequest);
+  console.log(pagingList);
 
   return (
     <>
@@ -52,6 +69,7 @@ const Users = () => {
         <title>회원 목록</title>
         <meta name="description" content="회원 목록" />
       </Helmet>
+      <WriteModal />
       <SideSheet isShown={isShow} onCloseComplete={() => setIsShow(false)}>
         <Paragraph margin={40}>Basic Example</Paragraph>
       </SideSheet>
@@ -61,16 +79,19 @@ const Users = () => {
         </Button>
         <Button onClick={() => setIsShow(true)}>Show Basic Side Sheet</Button>{' '}
       </div>
-      <ListTable postList={pagingList.list} loading={loading} />
-      <div style={{ textAlign: 'center' }}>
-        <Pagination
-          onChange={onPageChange}
-          current={page}
-          pages={pagingList.limit}
-          total={pagingList.total}
-          itemRender={itemRender}
-          style={{ display: 'inline-block', margin: '10px 0px' }}
-        />
+      <div style={{ width: '900px' }}>
+        <ListTable />
+        <div style={{ textAlign: 'center' }}>
+          <Pagination
+            onChange={onPageChange}
+            current={pagingList.page}
+            pageSize={pagingList.limit}
+            total={pagingList.total}
+            itemRender={itemRender}
+            showQuickJumper
+            style={{ display: 'inline-block', margin: '10px 0px' }}
+          />
+        </div>
       </div>
     </>
   );

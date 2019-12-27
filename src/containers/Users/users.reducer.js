@@ -62,6 +62,8 @@ const boardReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
       case GET_POSTS_REQUEST:
+        console.log('reducer-GET_POSTS_REQUEST');
+        //draft.pagingRequest = action.payload;
         draft.loading = true;
         break;
       case GET_POSTS_SUCCESS:
@@ -95,6 +97,7 @@ const boardReducer = (state = initialState, action) =>
         break;
       case HANDLE_MODAL_SHOW:
         draft.modalVisible = true;
+        console.log('modalVisible', draft.modalVisible);
         break;
       case HANDLE_MODAL_CANCEL:
         draft.modalLoading = false;

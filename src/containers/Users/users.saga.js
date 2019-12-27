@@ -9,9 +9,12 @@ const selectTitle = ({ users }) => users.postForm.title;
 const selectText = ({ users }) => users.postForm.text;
 const selectPhoto = ({ users }) => users.postForm.photo;
 
-export function* getPostsSaga() {
+export function* getPostsSaga(action) {
+  console.log('saga-GET_POSTS_REQUEST');
+  //console.log('payload', action.payload);
   try {
-    const pageRequest = yield select(selectPagingRequest);
+    //const pageRequest = yield select(selectPagingRequest);
+    const pageRequest = action.payload;
     const data = yield call(getPostsAPI, pageRequest);
     yield put(getPostsSuccess(data));
   } catch (error) {

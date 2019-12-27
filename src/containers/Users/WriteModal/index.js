@@ -9,14 +9,14 @@ import {
   onChangeTextAction,
   onChangeAddPhotoAction,
   onChangeDelPhotoAction,
-} from '../board.reducer';
+} from '../users.reducer';
 
-const WritePostModal = () => {
-  const modalVisible = useSelector(({ board }) => board.modalVisible);
-  const modalLoading = useSelector(({ board }) => board.modalLoading);
-  const title = useSelector(({ board }) => board.postForm.title);
-  const text = useSelector(({ board }) => board.postForm.text);
-  const photo = useSelector(({ board }) => board.postForm.photo);
+const WriteModal = () => {
+  const modalVisible = useSelector(({ users }) => users.modalVisible);
+  const modalLoading = useSelector(({ users }) => users.modalLoading);
+  const title = useSelector(({ users }) => users.postForm.title);
+  const text = useSelector(({ users }) => users.postForm.text);
+  const photo = useSelector(({ users }) => users.postForm.photo);
 
   const dispatch = useDispatch();
   const postPosts = () => dispatch(postPostsAction());
@@ -54,4 +54,4 @@ const WritePostModal = () => {
   );
 };
 
-export default WritePostModal;
+export default WriteModal;
