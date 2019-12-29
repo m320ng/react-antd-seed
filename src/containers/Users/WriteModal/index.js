@@ -11,6 +11,8 @@ import {
   onChangeDelPhotoAction,
 } from '../users.reducer';
 
+import Example from './exampleForm3';
+
 const WriteModal = () => {
   const modalVisible = useSelector(({ users }) => users.modalVisible);
   const modalLoading = useSelector(({ users }) => users.modalLoading);
@@ -34,22 +36,11 @@ const WriteModal = () => {
       title="Write a Post"
       visible={modalVisible}
       onOk={postPosts}
+      width="100vh"
       confirmLoading={modalLoading}
       onCancel={handleModalCancel}
     >
-      <div style={{ marginBottom: 16 }}>
-        <Input placeholder="Title" onChange={onChangeTitle} value={title} />
-      </div>
-      <div style={{ marginBottom: 16 }}>
-        <Input.TextArea rows={4} placeholder="Write some text..." onChange={onChangeText} value={text} />
-      </div>
-      <div style={{ marginBottom: 16 }}>
-        <Upload onRemove={onChangeDelPhoto} beforeUpload={onChangeAddPhoto} fileList={photo} accept="image/*">
-          <Button>
-            <Icon type="upload" /> Select a Photo
-          </Button>
-        </Upload>
-      </div>
+      <Example />
     </Modal>
   );
 };

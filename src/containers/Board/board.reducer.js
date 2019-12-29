@@ -1,37 +1,14 @@
 import produce from 'immer';
 import { message } from 'antd';
 
-export const GET_POSTS_REQUEST = 'board/GET_POSTS_REQUEST';
-export const GET_POSTS_SUCCESS = 'board/GET_POSTS_SUCCESS';
-export const GET_POSTS_FAILURE = 'board/GET_POSTS_FAILURE';
+import { takeLatest, call, put, select } from 'redux-saga/effects';
+import { getPostsAPI, postPostsAPI } from './board.api';
 
-export const POST_POSTS_REQUEST = 'board/POST_POSTS_REQUEST';
-export const POST_POSTS_SUCCESS = 'board/POST_POSTS_SUCCESS';
-export const POST_POSTS_FAILURE = 'board/POST_POSTS_FAILURE';
+import reducerRegistry from '../../utils/reducerRegistry';
+import sagaRegistry from '../../utils/sagaRegistry';
 
-export const HANDLE_MODAL_SHOW = 'board/HANDLE_MODAL_SHOW';
-export const HANDLE_MODAL_CANCEL = 'board/HANDLE_MODAL_CANCEL';
-
-export const ON_CHANGE_TITLE = 'board/ON_CHANGE_TITLE';
-export const ON_CHANGE_TEXT = 'board/ON_CHANGE_TEXT';
-export const ON_CHANGE_ADD_PHOTO = 'board/ON_CHANGE_ADD_PHOTO';
-export const ON_CHANGE_DEL_PHOTO = 'board/ON_CHANGE_DEL_PHOTO';
-
-export const getPostsAction = payload => ({ type: GET_POSTS_REQUEST, payload });
-export const getPostsSuccess = payload => ({ type: GET_POSTS_SUCCESS, payload });
-export const getPostsFailure = payload => ({ type: GET_POSTS_FAILURE, payload });
-
-export const postPostsAction = payload => ({ type: POST_POSTS_REQUEST, payload });
-export const postPostsSuccess = payload => ({ type: POST_POSTS_SUCCESS, payload });
-export const postPostsFailure = payload => ({ type: POST_POSTS_FAILURE, payload });
-
-export const handleModalShowAction = payload => ({ type: HANDLE_MODAL_SHOW, payload });
-export const handleModalCancelAction = payload => ({ type: HANDLE_MODAL_CANCEL, payload });
-
-export const onChangeTitleAction = payload => ({ type: ON_CHANGE_TITLE, payload });
-export const onChangeTextAction = payload => ({ type: ON_CHANGE_TEXT, payload });
-export const onChangeAddPhotoAction = payload => ({ type: ON_CHANGE_ADD_PHOTO, payload });
-export const onChangeDelPhotoAction = payload => ({ type: ON_CHANGE_DEL_PHOTO, payload });
+const reducerName = 'board';
+const makeActionName = name => `${reducerName}/${name}`;
 
 export const initialState = {
   postList: [],
@@ -47,9 +24,8 @@ export const initialState = {
   },
 };
 
-/* eslint-disable default-case, no-param-reassign */
-const boardReducer = (state = initialState, action) =>
-  produce(state, draft => {
+export default function reducer(state = initialState, action) {
+  return produce(state, draft => {
     switch (action.type) {
       case GET_POSTS_REQUEST:
         draft.loading = true;
@@ -103,5 +79,77 @@ const boardReducer = (state = initialState, action) =>
         break;
     }
   });
+}
 
-export default boardReducer;
+reducerRegistry.register(reducerName, reducer);
+
+// selector
+export const selectTitle = state => state[reducerName].postForm.title;
+export const selectText = state => state[reducerName].postForm.text;
+export const selectPhoto = state => state[reducerName].postForm.photo;
+
+// action
+export const GET_POSTS_REQUEST = makeActionName('GET_POSTS_REQUEST');
+export const GET_POSTS_SUCCESS = makeActionName('GET_POSTS_SUCCESS');
+export const GET_POSTS_FAILURE = makeActionName('GET_POSTS_FAILURE');
+
+export const POST_POSTS_REQUEST = makeActionName('POST_POSTS_REQUEST');
+export const POST_POSTS_SUCCESS = makeActionName('POST_POSTS_SUCCESS');
+export const POST_POSTS_FAILURE = makeActionName('POST_POSTS_FAILURE');
+
+export const HANDLE_MODAL_SHOW = makeActionName('HANDLE_MODAL_SHOW');
+export const HANDLE_MODAL_CANCEL = makeActionName('HANDLE_MODAL_CANCEL');
+
+export const ON_CHANGE_TITLE = makeActionName('ON_CHANGE_TITLE');
+export const ON_CHANGE_TEXT = makeActionName('ON_CHANGE_TEXT');
+export const ON_CHANGE_ADD_PHOTO = makeActionName('ON_CHANGE_ADD_PHOTO');
+export const ON_CHANGE_DEL_PHOTO = makeActionName('ON_CHANGE_DEL_PHOTO');
+
+// dispatch
+export const getPostsAction = payload => ({ type: GET_POSTS_REQUEST, payload });
+export const getPostsSuccess = payload => ({ type: GET_POSTS_SUCCESS, payload });
+export const getPostsFailure = payload => ({ type: GET_POSTS_FAILURE, payload });
+
+export const postPostsAction = payload => ({ type: POST_POSTS_REQUEST, payload });
+export const postPostsSuccess = payload => ({ type: POST_POSTS_SUCCESS, payload });
+export const postPostsFailure = payload => ({ type: POST_POSTS_FAILURE, payload });
+
+export const handleModalShowAction = payload => ({ type: HANDLE_MODAL_SHOW, payload });
+export const handleModalCancelAction = payload => ({ type: HANDLE_MODAL_CANCEL, payload });
+
+export const onChangeTitleAction = payload => ({ type: ON_CHANGE_TITLE, payload });
+export const onChangeTextAction = payload => ({ type: ON_CHANGE_TEXT, payload });
+export const onChangeAddPhotoAction = payload => ({ type: ON_CHANGE_ADD_PHOTO, payload });
+export const onChangeDelPhotoAction = payload => ({ type: ON_CHANGE_DEL_PHOTO, payload });
+
+// saga
+export function* getPostsSaga() {
+  try {
+    const postList = yield call(getPostsAPI);
+    yield put(getPostsSuccess(postList));
+  } catch (error) {
+    yield put(getPostsFailure(error));
+  }
+}
+
+export function* postPostsSaga() {
+  const title = yield select(selectTitle());
+  const text = yield select(selectText());
+  const photoList = yield select(selectPhoto());
+  const photo = photoList[0];
+
+  try {
+    yield call(postPostsAPI, { title, text, photo });
+    yield put(postPostsSuccess());
+    yield put(getPostsAction());
+  } catch (error) {
+    yield put(postPostsFailure(error));
+  }
+}
+
+export function* saga() {
+  yield takeLatest(GET_POSTS_REQUEST, getPostsSaga);
+  yield takeLatest(POST_POSTS_REQUEST, postPostsSaga);
+}
+
+sagaRegistry.register(reducerName, saga);

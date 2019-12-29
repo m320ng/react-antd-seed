@@ -1,17 +1,14 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import { Redirect } from 'react-router';
 
-function SignOut() {
-  console.log('SignOut');
+const SignOut = () => {
+  localStorage.removeItem('token');
   return (
     <>
-      <Helmet>
-        <title>SignOut</title>
-        <meta name="description" content="Description of SignIn" />
-      </Helmet>
-      <div>SignOut</div>
+      <Redirect to="/signin" />
     </>
   );
-}
+};
 
 export default SignOut;

@@ -1,6 +1,9 @@
 import Board from 'containers/Board';
 import Users from 'containers/Users';
-import SignIn from 'containers/SignIn';
+import Users2 from 'containers/Users/index2';
+
+import SignIn from 'containers/SignIn/index2';
+import SignOut from 'containers/SignOut';
 import NotFound from 'containers/NotFound';
 
 const mainRoutes = [
@@ -14,19 +17,42 @@ const mainRoutes = [
     permission: 'admin',
   },
   {
-    exact: true,
-    path: '/users',
     name: '회원관리',
-    icon: 'member',
-    component: Users,
-    auth: true,
-    permission: 'admin',
+    icon: 'mail',
+    childs: [
+      {
+        exact: true,
+        path: '/users/list1',
+        name: '회원목록1',
+        icon: 'mail',
+        component: Users,
+        auth: true,
+        permission: 'admin',
+      },
+      {
+        exact: true,
+        path: '/users/list2',
+        name: '회원목록2',
+        icon: 'mail',
+        component: Users2,
+        auth: true,
+        permission: 'admin',
+      },
+    ],
   },
+  /*
   {
     path: '/signin',
     name: 'Sign In',
     icon: 'login',
     component: SignIn,
+  },
+  */
+  {
+    path: '/signout',
+    name: 'Sign Out',
+    icon: 'logout',
+    component: SignOut,
   },
   {
     path: '',

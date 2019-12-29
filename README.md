@@ -41,3 +41,7 @@ Evergreen UI
 es6 문법
 
 - <https://itstory.tk/entry/JavaScript-ES6-%EB%AC%B8%EB%B2%95-%EC%A0%95%EB%A6%AC>
+
+랜덤 데이터 API
+
+- <https://randomuser.me/>

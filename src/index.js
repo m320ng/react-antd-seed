@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'connected-react-router';
+import { ConnectedRouter, connectRouter } from 'connected-react-router';
 
 import configureStore from './configureStore';
 import history from 'utils/history';
@@ -9,8 +9,9 @@ import App from './App';
 
 const MOUNT_NODE = document.getElementById('root');
 
-const initialState = {};
-const store = configureStore(initialState, history);
+const preloadedState = {};
+
+const store = configureStore(preloadedState, history);
 
 const render = () => {
   ReactDOM.render(
@@ -23,11 +24,13 @@ const render = () => {
   );
 };
 
+/*
 if (module.hot) {
   module.hot.accept(['./App'], () => {
     ReactDOM.unmountComponentAtNode(MOUNT_NODE);
     render();
   });
 }
+*/
 
 render();
