@@ -2,9 +2,6 @@ import produce from 'immer';
 import jwtDecode from 'jwt-decode';
 
 import { POST_SIGN_IN_SUCCESS } from './containers/SignIn/signin.reducer';
-import reducerRegistry from './utils/reducerRegistry';
-
-const reducerName = 'global';
 
 const token = localStorage.getItem('token');
 const userState = token ? { user: jwtDecode(token) } : {};
@@ -22,5 +19,3 @@ export default function reducer(state = initialState, action) {
       return state;
   }
 }
-
-reducerRegistry.register(reducerName, reducer);

@@ -8,8 +8,6 @@ import sagaRegistry from './utils/sagaRegistry';
 
 import { connectRouter } from 'connected-react-router';
 
-import history from 'utils/history';
-
 import globalReducer from './global.reducer';
 
 export default function configureStore(preloadedState = {}, history) {

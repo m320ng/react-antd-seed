@@ -2,9 +2,7 @@ import Board from 'containers/Board';
 import Users from 'containers/Users';
 import Users2 from 'containers/Users/index2';
 
-import SignIn from 'containers/SignIn/index2';
 import SignOut from 'containers/SignOut';
-import NotFound from 'containers/NotFound';
 
 const mainRoutes = [
   {
@@ -53,12 +51,6 @@ const mainRoutes = [
     name: 'Sign Out',
     icon: 'logout',
     component: SignOut,
-  },
-  {
-    path: '',
-    name: 'Not Found',
-    icon: 'close-circle',
-    component: NotFound,
   },
 ];
 

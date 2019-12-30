@@ -1,110 +1,131 @@
 import React from 'react';
-import { Table, Button, Drawer } from 'antd';
+import { Table, Button, Drawer, Modal, message } from 'antd';
+import { connect } from 'react-redux';
 import Moment from 'react-moment';
-import { fetchGet, isCancel } from '../../../utils/fetch';
+import { apiGetUsers } from '../users.api';
 import FilterForm from './filterForm';
-
-const columns = [
-  {
-    title: 'ID',
-    dataIndex: 'id',
-    fixed: 'left',
-    width: 90,
-    sorter: true,
-  },
-  {
-    title: '이름',
-    dataIndex: 'name',
-    width: 100,
-    sorter: true,
-  },
-  {
-    title: '계정',
-    dataIndex: 'account',
-    width: 100,
-  },
-  {
-    dataIndex: '팀명',
-    width: 100,
-  },
-  {
-    title: '계정',
-    dataIndex: 'account',
-    width: 100,
-  },
-  {
-    title: '계정',
-    dataIndex: 'account',
-    key: 'account',
-    width: 100,
-  },
-  {
-    title: '계정',
-    dataIndex: 'account',
-    width: 100,
-  },
-  {
-    title: '계정',
-    dataIndex: 'account',
-    width: 100,
-  },
-  {
-    title: '계정',
-    dataIndex: 'account',
-    width: 100,
-  },
-  {
-    title: '계정',
-    dataIndex: 'account',
-    width: 100,
-  },
-  {
-    title: '생성일',
-    dataIndex: 'created',
-    width: 160,
-    render: time => time && <Moment format="YYYY-MM-DD HH:mm:ss">{time}</Moment>,
-  },
-  {
-    title: '수정일',
-    dataIndex: 'updated',
-    width: 160,
-    render: time => time && <Moment format="YYYY-MM-DD HH:mm:ss">{time}</Moment>,
-  },
-  {
-    title: 'Action',
-    key: 'action',
-    width: 100,
-    fixed: 'right',
-    render: () => <Button>Delete</Button>,
-  },
-];
+import DetailModal from './detailModal';
+import { writeFormShowAction } from '../users.reducer';
 
 class ListTable extends React.Component {
   state = {
     data: [],
-    pagination: { current: 1, pageSize: 20 },
+    pagination: { current: 1, pageSize: 15 },
     loading: false,
     sort: {},
     fileters: [],
-    filterFormShown: false,
     selectedRowKeys: [],
+    filterFormShown: false,
+    detailModalShown: false,
+    detailType: '',
+    detailId: null,
   };
+
+  constructor(props) {
+    super(props);
+    this.columns = [
+      {
+        title: 'ID',
+        dataIndex: 'id',
+        fixed: 'left',
+        width: 90,
+        sorter: true,
+      },
+      {
+        title: '이름',
+        dataIndex: 'name',
+        width: 100,
+        sorter: true,
+      },
+      {
+        title: '계정',
+        dataIndex: 'account',
+        width: 100,
+      },
+      {
+        dataIndex: '팀명',
+        sorter: true,
+        width: 100,
+      },
+      {
+        title: '계정',
+        dataIndex: 'account',
+        width: 100,
+      },
+      {
+        title: '계정',
+        dataIndex: 'account',
+        key: 'account',
+        width: 100,
+      },
+      {
+        title: '계정',
+        dataIndex: 'account',
+        width: 100,
+      },
+      {
+        title: '계정',
+        dataIndex: 'account',
+        width: 100,
+      },
+      {
+        title: '계정',
+        dataIndex: 'account',
+        width: 100,
+      },
+      {
+        title: '계정',
+        dataIndex: 'account',
+        width: 100,
+      },
+      {
+        title: '생성일',
+        dataIndex: 'created',
+        width: 160,
+        render: time => time && <Moment format="YYYY-MM-DD HH:mm:ss">{time}</Moment>,
+      },
+      {
+        title: '수정일',
+        dataIndex: 'updated',
+        width: 160,
+        render: time => time && <Moment format="YYYY-MM-DD HH:mm:ss">{time}</Moment>,
+      },
+      {
+        title: 'Action',
+        key: 'action',
+        width: 100,
+        fixed: 'right',
+        render: (text, row) => <Button onClick={x => this.handleDetail(row)}>자세히</Button>,
+      },
+    ];
+    // 컬럼명 매핑 생략할 경우
+    this.columns.forEach(c => (!c.title ? (c.title = c.dataIndex) : c.title));
+  }
 
   componentDidMount() {
     this.fetch();
   }
+
+  handleDetail = row => {
+    console.log('detail', row);
+    this.setState({
+      detailModalShown: true,
+      detailType: 'detail',
+      detailId: row.id,
+    });
+  };
 
   fetch = (params = {}) => {
     console.log('params:', params);
 
     this.setState({ loading: true });
 
-    fetchGet('api/users', {
-      results: 10,
-      ...params,
-    })
-      .then(res => {
-        const data = res.data;
+    apiGetUsers(
+      {
+        results: 10,
+        ...params,
+      },
+      data => {
         const pagination = { ...this.state.pagination };
         pagination.current = data.page;
         pagination.total = data.total;
@@ -114,9 +135,9 @@ class ListTable extends React.Component {
           pagination,
         });
         window.scrollTo(0, 0);
-      })
-      .catch(e => {
-        if (isCancel(e)) {
+      },
+      (e, canceled) => {
+        if (canceled) {
           console.log('canceled');
         } else {
           this.setState({
@@ -124,7 +145,8 @@ class ListTable extends React.Component {
           });
           console.log(e);
         }
-      });
+      },
+    );
   };
 
   handleTableChange = (pagination, filters, sorter) => {
@@ -138,9 +160,6 @@ class ListTable extends React.Component {
           order: sortmig[sorter.order],
         }
       : '';
-    console.log(sorter);
-    console.log(sortmig[sorter.order]);
-    console.log(sort);
     this.setState({
       sort: sort,
     });
@@ -153,9 +172,32 @@ class ListTable extends React.Component {
     });
   };
 
-  handlerFilterForm = () => {
+  handlerCancelSelected = () => {
+    this.setState({
+      selectedRowKeys: [],
+    });
+  };
+
+  handlerFilterFormShow = () => {
     this.setState({
       filterFormShown: true,
+    });
+  };
+
+  handlerWriteFormShow = () => {
+    this.props.writeFormShow(true);
+  };
+
+  handlerSelectedDelete = () => {
+    if (!this.state.selectedRowKeys.length) {
+      message.warning('먼저 선택해주세요.');
+      return;
+    }
+    Modal.confirm({
+      content: `${this.state.selectedRowKeys.length}개를 정말 삭제하시겠습니까?`,
+      onOk: () => {
+        console.log('ok');
+      },
     });
   };
 
@@ -165,7 +207,6 @@ class ListTable extends React.Component {
       filterFormShown: false,
     });
     console.log(filters);
-    var pagination = { ...this.state.pagination };
     this.setState({
       filters: filters,
     });
@@ -182,26 +223,10 @@ class ListTable extends React.Component {
       filterFormShown: false,
     });
   };
-  /*
-  rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(this);
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    },
-    getCheckboxProps: record => ({
-      disabled: record.account === 'test', // Column configuration not to be checked
-      name: record.name,
-    }),
-  };
-  */
 
   onSelectChange = selectedRowKeys => {
     console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
-  };
-
-  handelTest = filters => {
-    fetch();
   };
 
   render() {
@@ -217,21 +242,31 @@ class ListTable extends React.Component {
         <Drawer visible={this.state.filterFormShown} width={300} onClose={this.onFilterFormClose}>
           <FilterForm onSearch={this.onFilterForm} />
         </Drawer>
-        <Button onClick={this.handlerFilterForm} icon="search">
-          검색
-        </Button>
-        <Button icon="delete">선택삭제</Button>
-        {selectedRowKeys.length ? (
-          <>
-            {selectedRowKeys.length}개가 선택되었습니다
-            <a>선택취소</a>
-          </>
-        ) : (
-          <React.Fragment />
-        )}
+        <DetailModal visible={this.state.detailModalShown} type={this.state.detailType} id={this.state.detailId} />
+        <div style={{ padding: '5px 0' }}>
+          <Button onClick={this.handlerWriteFormShow} type="primary" icon="edit">
+            등록
+          </Button>
+          &nbsp;
+          <Button onClick={this.handlerFilterFormShow} icon="search">
+            검색
+          </Button>
+          &nbsp;
+          <Button icon="delete" onClick={this.handlerSelectedDelete}>
+            선택삭제
+          </Button>
+          {selectedRowKeys.length ? (
+            <>
+              <span style={{ padding: '2px 4px' }}>{selectedRowKeys.length}개가 선택되었습니다</span>
+              <a onClick={this.handlerCancelSelected}>선택취소</a>
+            </>
+          ) : (
+            <React.Fragment />
+          )}
+        </div>
         <Table
           style={{ maxWidth: 'max-content' }}
-          columns={columns}
+          columns={this.columns}
           rowKey={record => record.id}
           rowSelection={rowSelection}
           dataSource={this.state.data}
@@ -240,10 +275,13 @@ class ListTable extends React.Component {
           onChange={this.handleTableChange}
           scroll={{ x: true }}
         />
-        <Button onClick={this.handelTest}>reqwest test</Button>
       </>
     );
   }
 }
 
-export default ListTable;
+const mapDispatchProps = dispatch => ({
+  writeFormShow: value => dispatch(writeFormShowAction(value)),
+});
+
+export default connect(null, mapDispatchProps)(ListTable);

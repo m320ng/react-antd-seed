@@ -1,14 +1,31 @@
-import request from 'utils/request';
+import { fetchGet, fetchPost, isCancel } from '../../utils/fetch';
 
-export function getPostsAPI(pageRequest) {
-  return request.get(`/api/users?page=${pageRequest.page}&limit=${pageRequest.limit}`);
+export function apiGetUsers(data, success, fail) {
+  fetchGet('api/users', data)
+    .then(res => {
+      success(res.data, res);
+    })
+    .catch(e => {
+      fail(e, isCancel(e));
+    });
 }
 
-export function postPostsAPI(payload) {
+export function apiGetUser(id, success, fail) {
+  fetchGet(`api/users/${id}`, null)
+    .then(res => {
+      success(res.data, res);
+    })
+    .catch(e => {
+      fail(e, isCancel(e));
+    });
+}
+
+export function apiPostUser(payload) {
   const formData = new FormData();
   formData.set('title', payload.title);
   formData.set('text', payload.text);
   payload.photo && formData.set('photo', payload.photo);
 
-  return request.put('/api/users', formData);
+  //return request.put('/api/users', formData);
+  return;
 }

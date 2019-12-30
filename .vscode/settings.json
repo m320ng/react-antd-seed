@@ -1,5 +1,4 @@
 {
-  "eslint.autoFixOnSave": true,
   "editor.formatOnSave": true,
   "javascript.suggestionActions.enabled": false,
   "editor.codeActionsOnSave": {
