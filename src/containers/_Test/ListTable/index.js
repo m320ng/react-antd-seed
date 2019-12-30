@@ -100,7 +100,7 @@ class ListTable extends React.Component {
       },
     ];
     // 컬럼명 매핑 생략할 경우
-    this.columns.forEach(c => (!c.title ? (c.title = c.dataIndex.replace(/_/g, ' ')) : c.title));
+    this.columns.forEach(c => (!c.title ? (c.title = c.dataIndex) : c.title));
   }
 
   componentDidMount() {

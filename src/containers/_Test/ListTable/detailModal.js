@@ -14,6 +14,8 @@ const DetailModal = props => {
     dispatch(detailModalShowAction({ ...detailModalInfo, visible: false }));
   };
 
+  useEffect(() => {}, [props]);
+
   const onChangeForm = (type, id) => {
     dispatch(detailModalShowAction({ visible: true, type: type, id: id }));
   };
@@ -29,7 +31,7 @@ const DetailModal = props => {
       {detailModalInfo.type == 'detail' ? (
         <DetailForm onChangeForm={onChangeForm} type={detailModalInfo.type} id={detailModalInfo.id} />
       ) : (
-        <EditForm onChangeForm={onChangeForm} onCancel={onCancel} type={detailModalInfo.type} id={detailModalInfo.id} />
+        <EditForm onChangeForm={onChangeForm} type={detailModalInfo.type} id={detailModalInfo.id} />
       )}
     </Modal>
   );

@@ -7,7 +7,7 @@ import Header from 'components/Header';
 import Sider from 'components/Sider';
 import mainRoutes from 'routes/mainRoutes';
 
-import SignIn from 'containers/SignIn/index2';
+import SignIn from 'containers/SignIn';
 import NotFound from 'containers/NotFound';
 import SharedComponent from 'containers/SharedComponent';
 

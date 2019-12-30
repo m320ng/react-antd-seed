@@ -86,8 +86,45 @@ export const fetchPost = (url, data, abort = true, timeout = 15000) => {
       }
     }
 
-    axios
+    instance
       .post(url, data, {
+        cancelToken: new CancelToken(function executor(c) {
+          cancel = c;
+        }),
+      })
+      .then(res => {
+        resolve(res);
+      })
+      .catch(e => {
+        reject(e);
+      });
+  });
+};
+
+export const fetchPut = (url, data, abort = true, timeout = 15000) => {
+  const token = localStorage.getItem('token');
+
+  const instance = axios.create({
+    baseURL: process.env.REACT_APP_BASE_URL,
+    timeout: timeout,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  let cancel;
+
+  console.log(url);
+
+  return new Promise((resolve, reject) => {
+    if (abort) {
+      if (cancel !== undefined) {
+        cancel();
+      }
+    }
+
+    instance
+      .put(url, data, {
         cancelToken: new CancelToken(function executor(c) {
           cancel = c;
         }),

@@ -1,31 +1,41 @@
-import { fetchGet, fetchPost, isCancel } from '../../utils/fetch';
+import { fetchGet, fetchPost, fetchPut, isCancel } from '../../utils/fetch';
 
 export function apiGetUsers(data, success, fail) {
-  fetchGet('api/users', data)
+  fetchGet('/api/users', data)
     .then(res => {
       success(res.data, res);
     })
     .catch(e => {
-      fail(e, isCancel(e));
+      fail(e.response, isCancel(e), e);
     });
 }
 
 export function apiGetUser(id, success, fail) {
-  fetchGet(`api/users/${id}`, null)
+  fetchGet(`/api/users/${id}`, null)
     .then(res => {
       success(res.data, res);
     })
     .catch(e => {
-      fail(e, isCancel(e));
+      fail(e.response, isCancel(e), e);
     });
 }
 
-export function apiPostUser(payload) {
-  const formData = new FormData();
-  formData.set('title', payload.title);
-  formData.set('text', payload.text);
-  payload.photo && formData.set('photo', payload.photo);
+export function apiPutUser(data, success, fail) {
+  fetchPut('/api/users', data)
+    .then(res => {
+      success(res.data, res);
+    })
+    .catch(e => {
+      fail(e.response, isCancel(e), e);
+    });
+}
 
-  //return request.put('/api/users', formData);
-  return;
+export function apiPostUser(id, data, success, fail) {
+  fetchPost(`/api/users/${id}`, data)
+    .then(res => {
+      success(res.data, res);
+    })
+    .catch(e => {
+      fail(e.response, isCancel(e), e);
+    });
 }

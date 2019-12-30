@@ -3,7 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { Button } from 'antd';
 
+import WriteModal from './WriteModal';
 import ListTable from './ListTable';
+import DetailForm from './ListTable/detailForm';
 
 const Users = () => {
   return (

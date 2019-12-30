@@ -35,7 +35,7 @@ const DetailForm = ({ id, onChangeForm }) => {
           <Descriptions.Item label="개발자여부">{detail.isDeveloper}</Descriptions.Item>
           <Descriptions.Item label="전화번호">{detail.phone}</Descriptions.Item>
         </Descriptions>
-        <div style={{ textAlign: 'right', marginTop: 10 }}>
+        <div style={{ textAlign: 'right' }}>
           <Button onClick={x => onChangeForm('edit', id)}>수정</Button>
         </div>
       </Skeleton>
