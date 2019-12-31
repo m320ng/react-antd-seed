@@ -18,13 +18,13 @@ const mainRoutes = [
   },
   {
     name: '회원관리',
-    icon: 'mail',
-    childs: [
+    icon: 'user',
+    children: [
       {
         exact: true,
         path: '/users/list1',
         name: '회원목록(Class)',
-        icon: 'mail',
+        icon: 'user',
         component: Users,
         auth: true,
         permission: 'admin',
@@ -33,7 +33,7 @@ const mainRoutes = [
         exact: true,
         path: '/users/list2',
         name: '회원목록(Functional)',
-        icon: 'mail',
+        icon: 'wifi',
         component: UsersList,
         auth: true,
         permission: 'admin',
@@ -43,7 +43,7 @@ const mainRoutes = [
   {
     path: '/board',
     name: '게시판(리덕스)',
-    icon: 'dash',
+    icon: 'bulb',
     component: Board,
     auth: true,
     permission: 'admin',

@@ -13,11 +13,19 @@ const Sider = ({ location, history }) => {
   const user = useSelector(({ global }) => global.user);
 
   return (
-    <Layout.Sider>
-      <Menu theme="" selectedKeys={[location.pathname]} mode="inline">
+    <Layout.Sider width={250}>
+      <div style={{ textAlign: 'center', padding: '5px 0' }}>
+        <Link to="/">
+          <Icon type="code-sandbox" style={{ fontSize: '22px' }} />
+          &nbsp;
+          <span style={{ lineHeight: '48px', fontWeight: 'bold', fontSize: '20px', color: '#ffffff' }}>AdminUI</span>
+          &nbsp;
+        </Link>
+      </div>
+      <Menu theme="dark" selectedKeys={[location.pathname]} mode="inline">
         {mainRoutes.map(route =>
           !route.auth || (!route.permission && user) || (user && user.permissions.includes(route.permission)) ? (
-            route.childs && route.childs.length ? (
+            route.children && route.children.length ? (
               <SubMenu
                 title={
                   <span>
@@ -26,7 +34,7 @@ const Sider = ({ location, history }) => {
                   </span>
                 }
               >
-                {route.childs.map(subroute => (
+                {route.children.map(subroute => (
                   <Menu.Item key={subroute.path || '/notfound'}>
                     <Link to={subroute.path || '/notfound'}>
                       <Icon type={subroute.icon} />

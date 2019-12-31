@@ -1,6 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, Link } from 'react-router-dom';
 import { Layout } from 'antd';
 
 import Header from 'components/Header';
@@ -10,6 +9,13 @@ import mainRoutes from 'routes/mainRoutes';
 import SignIn from 'containers/SignIn';
 import NotFound from 'containers/NotFound';
 import SharedComponent from 'containers/SharedComponent';
+
+import Location from 'components/location';
+
+const itemRender = (route, params, routes, paths) => {
+  const last = routes.indexOf(route) === routes.length - 1;
+  return last ? <span>{route.name}</span> : <Link to={paths.join('/')}>{route.name}</Link>;
+};
 
 const RouteLayout = ({ component: Component, ...rest }) => {
   console.log('RouteLayout');
@@ -24,15 +30,16 @@ const RouteLayout = ({ component: Component, ...rest }) => {
           <Redirect to="/signin" />
         ) : (
           <Layout style={{ minHeight: '100vh' }}>
-            <Header />
+            <Sider />
             <Layout>
-              <Sider />
-              <Layout>
-                <Layout.Content style={{ margin: '16px' }}>
+              <Header />
+              <Layout.Content>
+                <Location routes={mainRoutes} />
+                <div style={{ padding: '16px' }}>
                   <Component {...matchProps} />
-                </Layout.Content>
-                <Layout.Footer style={{ textAlign: 'center' }}>UI Test</Layout.Footer>
-              </Layout>
+                </div>
+              </Layout.Content>
+              <Layout.Footer style={{ textAlign: 'center' }}>UI Test</Layout.Footer>
             </Layout>
           </Layout>
         )
@@ -47,8 +54,8 @@ export default function App() {
       <Switch>
         <Route path="/signin" name="로그인" icon="login" component={SignIn} />
         {mainRoutes.map(route =>
-          route.childs && route.childs.length ? (
-            route.childs.map(subroute => <RouteLayout {...subroute} />)
+          route.children && route.children.length ? (
+            route.children.map(subroute => <RouteLayout {...subroute} />)
           ) : (
             <RouteLayout {...route} />
           ),

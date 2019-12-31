@@ -12,16 +12,27 @@ const Header = () => {
   };
 
   return (
-    <Layout.Header style={{ height: '48px', lineHeight: '48px', padding: '0 30px' }}>
-      <Link to="/">
-        <span style={{ lineHeight: '48px', fontWeight: 'bold', fontSize: 'medium' }}>
-          <Icon type="layout" /> Logo
+    <Layout.Header
+      style={{
+        background: '#fff',
+        height: '48px',
+        padding: '0',
+      }}
+    >
+      <div
+        style={{
+          padding: '0 16px',
+          height: '48px',
+          position: 'relative',
+          lineHeight: '48px',
+          boxShadow: '0 1px 4px rgba(0,21,41,.08)',
+        }}
+      >
+        <Icon className="trigger" type={collapsed ? 'menu-unfold' : 'menu-fold'} onClick={toggle} />
+        <span level={4} style={{ lineHeight: '48px', float: 'right' }}>
+          <Icon type="user" /> {user ? user.permission : ''}
         </span>
-      </Link>
-      <Icon className="trigger" type={collapsed ? 'menu-unfold' : 'menu-fold'} onClick={toggle} />
-      <span level={4} style={{ lineHeight: '48px', float: 'right', color: 'rgba(255, 255, 255, 0.65)' }}>
-        <Icon type="user" /> {user ? user.permission : ''}
-      </span>
+      </div>
     </Layout.Header>
   );
 };
