@@ -1,4 +1,4 @@
-# react
+# react sample
 
 ## 설치
 
