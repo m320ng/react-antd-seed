@@ -4,7 +4,7 @@ import { SideSheet, Paragraph } from 'evergreen-ui';
 import { Button as EverGreenButton } from 'evergreen-ui';
 import Moment from 'react-moment';
 import { produce } from 'immer';
-import { fetchGet, isCancel } from '../../../utils/fetch';
+import { fetchGet, isCancel } from 'utils/fetch';
 import FilterForm from './filterForm';
 
 const columns = [

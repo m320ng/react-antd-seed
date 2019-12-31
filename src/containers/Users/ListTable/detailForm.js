@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Skeleton, Button, Descriptions } from 'antd';
 import { apiGetUser } from '../users.api';
 
-const DetailForm = ({ id, onChangeForm }) => {
+const DetailForm = ({ id, onChangeForm, onCancel }) => {
   const [detail, setDetail] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -37,6 +37,8 @@ const DetailForm = ({ id, onChangeForm }) => {
         </Descriptions>
         <div style={{ textAlign: 'right', marginTop: 10 }}>
           <Button onClick={x => onChangeForm('edit', id)}>수정</Button>
+          &nbsp;
+          <Button onClick={x => onCancel()}>닫기</Button>
         </div>
       </Skeleton>
     </div>

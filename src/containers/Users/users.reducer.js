@@ -1,5 +1,5 @@
-import reducerRegistry from '../../utils/reducerRegistry';
-import sagaRegistry from '../../utils/sagaRegistry';
+import reducerRegistry from 'utils/reducerRegistry';
+import sagaRegistry from 'utils/sagaRegistry';
 
 const reducerName = 'users';
 const makeActionName = name => `${reducerName}/${name}`;

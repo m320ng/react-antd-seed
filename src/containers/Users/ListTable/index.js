@@ -118,7 +118,6 @@ class ListTable extends React.Component {
 
     apiGetUsers(
       {
-        results: 10,
         ...params,
       },
       data => {

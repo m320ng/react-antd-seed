@@ -1,7 +1,7 @@
-import Board from 'containers/Board';
+import Dashboard from 'containers/Dashboard';
 import Users from 'containers/Users';
 import UsersList from 'containers/Users/list';
-
+import Board from 'containers/Board';
 import SignOut from 'containers/SignOut';
 import CalendarSample from 'containers/Calendar';
 import EditorSample from 'containers/Editor';
@@ -10,9 +10,9 @@ const mainRoutes = [
   {
     exact: true,
     path: '/',
-    name: 'Home',
+    name: '홈',
     icon: 'home',
-    component: Board,
+    component: Dashboard,
     auth: true,
     permission: 'admin',
   },
@@ -23,7 +23,7 @@ const mainRoutes = [
       {
         exact: true,
         path: '/users/list1',
-        name: '회원목록1',
+        name: '회원목록(Class)',
         icon: 'mail',
         component: Users,
         auth: true,
@@ -32,13 +32,21 @@ const mainRoutes = [
       {
         exact: true,
         path: '/users/list2',
-        name: '회원목록2',
+        name: '회원목록(Functional)',
         icon: 'mail',
         component: UsersList,
         auth: true,
         permission: 'admin',
       },
     ],
+  },
+  {
+    path: '/board',
+    name: '게시판(리덕스)',
+    icon: 'dash',
+    component: Board,
+    auth: true,
+    permission: 'admin',
   },
   {
     path: '/calendar',
@@ -59,14 +67,14 @@ const mainRoutes = [
   /*
   {
     path: '/signin',
-    name: 'Sign In',
+    name: '로그인',
     icon: 'login',
     component: SignIn,
   },
   */
   {
     path: '/signout',
-    name: 'Sign Out',
+    name: '로그아웃',
     icon: 'logout',
     component: SignOut,
   },

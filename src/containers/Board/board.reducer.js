@@ -4,8 +4,8 @@ import { message } from 'antd';
 import { takeLatest, call, put, select } from 'redux-saga/effects';
 import { getPostsAPI, postPostsAPI } from './board.api';
 
-import reducerRegistry from '../../utils/reducerRegistry';
-import sagaRegistry from '../../utils/sagaRegistry';
+import reducerRegistry from 'utils/reducerRegistry';
+import sagaRegistry from 'utils/sagaRegistry';
 
 const reducerName = 'board';
 const makeActionName = name => `${reducerName}/${name}`;

@@ -1,4 +1,4 @@
-import { fetchGet, fetchPost, isCancel } from '../../utils/fetch';
+import { fetchGet, fetchPost, isCancel } from 'utils/fetch';
 
 export function apiGetUsers(data, success, fail) {
   fetchGet('api/users', data)

@@ -22,12 +22,18 @@ const DetailModal = props => {
     <Modal
       title={props.title ? props.title : '회원 정보'}
       visible={detailModalInfo.visible}
+      destroyOnClose={true}
       onCancel={onCancel}
       footer={false}
       width="100vh"
     >
       {detailModalInfo.type == 'detail' ? (
-        <DetailForm onChangeForm={onChangeForm} type={detailModalInfo.type} id={detailModalInfo.id} />
+        <DetailForm
+          onChangeForm={onChangeForm}
+          onCancel={onCancel}
+          type={detailModalInfo.type}
+          id={detailModalInfo.id}
+        />
       ) : (
         <EditForm onChangeForm={onChangeForm} onCancel={onCancel} type={detailModalInfo.type} id={detailModalInfo.id} />
       )}

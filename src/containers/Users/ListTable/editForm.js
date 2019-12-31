@@ -19,6 +19,7 @@ import {
   message,
 } from 'antd';
 import { apiGetUser, apiPostUser, apiPutUser } from '../users.api';
+import { camelize } from 'utils/util';
 
 class WriteForm extends React.Component {
   state = {
@@ -39,11 +40,14 @@ class WriteForm extends React.Component {
       id,
       data => {
         console.log('success', data);
+        /*
         let fields = {};
         for (let k in data) {
           fields = { ...fields, [k]: { value: data[k] } };
         }
         this.props.form.setFields(fields);
+        */
+        this.props.form.setFieldsValue(data);
         this.setState({ detail: data, loading: false });
       },
       (e, canceled) => {
@@ -75,13 +79,23 @@ class WriteForm extends React.Component {
             (res, canceled) => {
               console.log('error', res.status);
               console.log('error', res.data);
-              if (res.status == 400) {
-                if (res.data.errors) {
-                  Modal.confirm({
-                    constent: Object.values(res.data.errors)
-                      .map(x => (typeof x === 'string' ? x : x.join('<br/>')))
-                      .join('<br/>'),
-                  });
+              if (res.status === 400) {
+                if (typeof res.data === 'string') {
+                  message.error(res.data);
+                }
+                if (typeof res.data === 'object') {
+                  message.error('수정을 실패하였습니다');
+                  for (let k in res.data) {
+                    let field = camelize(k);
+                    let value = this.props.form.getFieldValue(field);
+                    let errors = res.data[k];
+                    this.props.form.setFields({
+                      [field]: {
+                        errors: errors.map(x => new Error(x)),
+                        value: value,
+                      },
+                    });
+                  }
                 }
               }
               this.setState({ loading: false });
@@ -102,13 +116,23 @@ class WriteForm extends React.Component {
             (res, canceled) => {
               console.log('error', res.status);
               console.log('error', res.data);
-              if (res.status == 400) {
-                if (res.data.errors) {
-                  Modal.confirm({
-                    constent: Object.values(res.data.errors)
-                      .map(x => (typeof x === 'string' ? x : x.join('<br/>')))
-                      .join('<br/>'),
-                  });
+              if (res.status === 400) {
+                if (typeof res.data === 'string') {
+                  message.error(res.data);
+                }
+                if (typeof res.data === 'object') {
+                  message.error('등록을 실패하였습니다');
+                  for (let k in res.data) {
+                    let field = camelize(k);
+                    let value = this.props.form.getFieldValue(field);
+                    let errors = res.data[k];
+                    this.props.form.setFields({
+                      [field]: {
+                        errors: errors.map(x => new Error(x)),
+                        value: value,
+                      },
+                    });
+                  }
                 }
               }
               this.setState({ loading: false });
@@ -225,10 +249,11 @@ class WriteForm extends React.Component {
             <Button type="primary" htmlType="submit">
               {this.props.type == 'write' ? '등록' : '수정'}
             </Button>
+            &nbsp;
             {this.props.type == 'edit' ? (
               <Button onClick={x => this.props.onChangeForm('detail', this.props.id)}>취소</Button>
             ) : (
-              <Button onClick={x => this.props.onCancel()}>취소</Button>
+              <Button onClick={x => this.props.onCancel()}>닫기</Button>
             )}
           </div>
         </Form>

@@ -1,7 +1,7 @@
 import produce from 'immer';
 import { message } from 'antd';
 
-import reducerRegistry from '../../utils/reducerRegistry';
+import reducerRegistry from 'utils/reducerRegistry';
 
 const reducerName = 'shared_component';
 const makeActionName = name => `${reducerName}/${name}`;

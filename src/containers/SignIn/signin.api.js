@@ -1,5 +1,5 @@
-import request from 'utils/request';
+import { fetchPost } from 'utils/fetch';
 
 export async function postSignInAPI(payload) {
-  return request.post('api/users/signin', payload);
+  return fetchPost('api/users/signin', payload);
 }

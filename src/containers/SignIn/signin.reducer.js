@@ -5,8 +5,8 @@ import { takeLatest, call, put, select } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 import { postSignInAPI } from './signin.api';
 
-import reducerRegistry from '../../utils/reducerRegistry';
-import sagaRegistry from '../../utils/sagaRegistry';
+import reducerRegistry from 'utils/reducerRegistry';
+import sagaRegistry from 'utils/sagaRegistry';
 
 const reducerName = 'signin';
 const makeActionName = name => `${reducerName}/${name}`;
@@ -32,9 +32,9 @@ export default function reducer(state = initialState, action = {}) {
         draft.signInForm.loading = false;
         let error = action.payload;
         if (error.response) {
-          message.error(`${error.response.data.message} (${error.response.status})`);
+          message.error(`${error.response.data}`);
         } else {
-          message.error(`${error.message}`);
+          message.error(`${error}`);
         }
         break;
       case ON_CHANGE_EMAIL:

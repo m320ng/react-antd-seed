@@ -1,94 +1,77 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Table, Button, Form, Input, Icon, Drawer } from 'antd';
-import { SideSheet, Paragraph } from 'evergreen-ui';
-import { Button as EverGreenButton } from 'evergreen-ui';
+import { useDispatch } from 'react-redux';
+import { Table, Button, Drawer } from 'antd';
 import Moment from 'react-moment';
 import { produce } from 'immer';
-import { fetchGet, isCancel } from '../../../utils/fetch';
+import { apiGetUsers } from '../users.api';
 import FilterForm from '../ListTable/filterForm';
+import DetailModal from '../ListTable/detailModal';
+import { detailModalShowAction } from '../users.reducer';
 
 const columns = [
   {
     title: 'ID',
     dataIndex: 'id',
-    key: 'id',
     fixed: 'left',
     width: 90,
+    sorter: true,
   },
   {
     title: '이름',
     dataIndex: 'name',
-    key: 'name',
     width: 100,
     sorter: true,
   },
   {
     title: '계정',
     dataIndex: 'account',
-    key: 'account',
     width: 100,
-    render: text => <pre style={{ marginBottom: 0, maxHeight: 100 }}>{text}</pre>,
+  },
+  {
+    dataIndex: '팀명',
+    sorter: true,
+    width: 100,
+  },
+  {
+    title: '계정',
+    dataIndex: 'account',
+    width: 100,
   },
   {
     title: '계정',
     dataIndex: 'account',
     key: 'account',
     width: 100,
-    render: text => <pre style={{ marginBottom: 0, maxHeight: 100 }}>{text}</pre>,
   },
   {
     title: '계정',
     dataIndex: 'account',
-    key: 'account',
     width: 100,
-    render: text => <pre style={{ marginBottom: 0, maxHeight: 100 }}>{text}</pre>,
   },
   {
     title: '계정',
     dataIndex: 'account',
-    key: 'account',
     width: 100,
-    render: text => <pre style={{ marginBottom: 0, maxHeight: 100 }}>{text}</pre>,
   },
   {
     title: '계정',
     dataIndex: 'account',
-    key: 'account',
     width: 100,
-    render: text => <pre style={{ marginBottom: 0, maxHeight: 100 }}>{text}</pre>,
   },
   {
     title: '계정',
     dataIndex: 'account',
-    key: 'account',
     width: 100,
-    render: text => <pre style={{ marginBottom: 0, maxHeight: 100 }}>{text}</pre>,
-  },
-  {
-    title: '계정',
-    dataIndex: 'account',
-    key: 'account',
-    width: 100,
-    render: text => <pre style={{ marginBottom: 0, maxHeight: 100 }}>{text}</pre>,
-  },
-  {
-    title: '계정',
-    dataIndex: 'account',
-    key: 'account',
-    width: 100,
-    render: text => <pre style={{ marginBottom: 0, maxHeight: 100 }}>{text}</pre>,
   },
   {
     title: '생성일',
     dataIndex: 'created',
-    key: 'created',
     width: 160,
     render: time => time && <Moment format="YYYY-MM-DD HH:mm:ss">{time}</Moment>,
   },
   {
     title: '수정일',
     dataIndex: 'updated',
-    key: 'updated',
     width: 160,
     render: time => time && <Moment format="YYYY-MM-DD HH:mm:ss">{time}</Moment>,
   },
@@ -97,40 +80,52 @@ const columns = [
     key: 'action',
     width: 100,
     fixed: 'right',
-    render: () => <Button>Delete</Button>,
   },
 ];
+// 컬럼명 매핑 생략할 경우
+columns.forEach(c => (!c.title ? (c.title = c.dataIndex.replace(/_/g, ' ')) : c.title));
 
 const ListTable = () => {
   const [listState, setListState] = useState({
     data: [],
-    pagination: { current: 1, pageSize: 20 },
+    pagination: { current: 1, pageSize: 15 },
+    fileters: [],
     loading: false,
   });
-
   const [filterFormShown, setFilterFormShown] = useState(false);
 
+  const dispatch = useDispatch();
+
+  const detailModalShow = payload => {
+    dispatch(detailModalShowAction(payload));
+  };
+
   useEffect(() => {
+    columns.forEach(x => {
+      if (x.key === 'action') {
+        x.render = (text, row) => (
+          <Button onClick={x => detailModalShow({ visible: true, type: 'detail', id: row.id })}>자세히</Button>
+        );
+      }
+    });
+
     fetch();
   }, []);
 
-  const fetch = (params = {}) => {
+  const fetch = useCallback((params = {}) => {
     console.log('params:', params);
 
-    setListState(
-      produce(listState, draft => {
+    setListState(prevState =>
+      produce(prevState, draft => {
         draft.loading = true;
       }),
     );
 
-    console.log('listState', listState);
-
-    fetchGet('api/users', {
-      results: 10,
-      ...params,
-    })
-      .then(res => {
-        const data = res.data;
+    apiGetUsers(
+      {
+        ...params,
+      },
+      data => {
         setListState(prevState =>
           produce(prevState, draft => {
             draft.loading = false;
@@ -140,9 +135,9 @@ const ListTable = () => {
           }),
         );
         window.scrollTo(0, 0);
-      })
-      .catch(e => {
-        if (isCancel(e)) {
+      },
+      (res, canceled) => {
+        if (canceled) {
           console.log('canceled');
         } else {
           setListState(prevState =>
@@ -150,44 +145,55 @@ const ListTable = () => {
               draft.loading = false;
             }),
           );
-          console.log(e);
         }
-      });
-  };
+      },
+    );
+  }, []);
 
   const handleTableChange = useCallback((pagination, filters, sorter) => {
     console.log('pagination', pagination);
     console.log('filters', filters);
 
-    const sort = { ascend: 'asc', descend: 'desc' };
+    const sortmig = { ascend: 'asc', descend: 'desc' };
+    const sort = sorter.order
+      ? {
+          field: sorter.field,
+          order: sortmig[sorter.order],
+        }
+      : '';
+    setListState(prevState =>
+      produce(prevState, draft => {
+        draft.sort = sort;
+      }),
+    );
+    const conditions = { ...listState.filters };
     fetch({
       page: pagination.current,
       limit: pagination.pageSize,
-      'sort.field': sorter.field,
-      'sort.order': sort[sorter.order],
-      ...filters,
+      sort,
+      conditions,
     });
-  });
+  }, []);
 
   const handlerFilterForm = useCallback(() => {
     setFilterFormShown(true);
-  });
+  }, []);
 
   const onFilterForm = filters => {
     setFilterFormShown(false);
+    setListState(prevState =>
+      produce(prevState, draft => {
+        draft.filters = filters;
+      }),
+    );
     console.log(filters);
     var pagination = listState.pagination;
     fetch({
       page: pagination.current,
       limit: pagination.pageSize,
-      //'sort.field': sorter.field,
-      //'sort.order': sort[sorter.order],
+      sort: listState.sort,
       conditions: filters,
     });
-  };
-
-  const handelTest = filters => {
-    fetch();
   };
 
   console.log('render ListTable');
@@ -197,9 +203,12 @@ const ListTable = () => {
       <Drawer visible={filterFormShown} width={300} onClose={() => setFilterFormShown(false)}>
         <FilterForm onSearch={onFilterForm} />
       </Drawer>
-      <Button onClick={handlerFilterForm} icon="search">
-        검색
-      </Button>
+      <DetailModal />
+      <div style={{ padding: '5px 0' }}>
+        <Button onClick={handlerFilterForm} icon="search">
+          검색
+        </Button>
+      </div>
       <Table
         style={{ maxWidth: 'max-content' }}
         columns={columns}
@@ -210,7 +219,6 @@ const ListTable = () => {
         onChange={handleTableChange}
         scroll={{ x: true }}
       />
-      <Button onClick={handelTest}>reqwest test</Button>
     </>
   );
 };

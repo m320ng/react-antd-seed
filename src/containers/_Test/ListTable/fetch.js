@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Table, Button } from 'antd';
-import { fetchGet, isCancel } from '../../../utils/fetch';
+import { fetchGet, isCancel } from 'utils/fetch';
 
 const columns = [
   {
