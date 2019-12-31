@@ -12,8 +12,16 @@ export default class DemoApp extends React.Component {
   componentDidMount() {
     const calendarApi = this.calendarRef.current.getApi();
     calendarApi.addEvent({
-      title: 'dynamic event',
-      date: '2019-12-30',
+      title: '샘플 일정1',
+      start: '2019-12-30',
+      end: '2020-01-07',
+      allDay: true,
+    });
+    calendarApi.addEvent({
+      title: '샘플 일정2',
+      start: '2020-01-02',
+      end: '2020-01-04',
+      color: '#396',
       allDay: true,
     });
   }
