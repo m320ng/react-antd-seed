@@ -5,6 +5,7 @@ import Board from 'containers/Board';
 import SignOut from 'containers/SignOut';
 import CalendarSample from 'containers/Calendar';
 import EditorSample from 'containers/Editor';
+import GridSample from 'containers/Grid';
 
 const mainRoutes = [
   {
@@ -61,6 +62,14 @@ const mainRoutes = [
     name: '에디터',
     icon: 'edit',
     component: EditorSample,
+    auth: true,
+    permission: 'admin',
+  },
+  {
+    path: '/grid',
+    name: '그리드(ag-grid)',
+    icon: 'table',
+    component: GridSample,
     auth: true,
     permission: 'admin',
   },
