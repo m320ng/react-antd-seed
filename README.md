@@ -40,10 +40,6 @@ Recharts
 
 - <http://recharts.org/en-US/>
 
-Evergreen UI
-
-- <https://evergreen.segment.com/>
-
 ## 참고 자료
 
 es6 문법
