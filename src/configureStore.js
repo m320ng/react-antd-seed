@@ -31,14 +31,9 @@ export default function configureStore(preloadedState = {}, history) {
     ...reducerRegistry.getReducers(),
   });
 
-  const store = createStore(
-    reducer,
-    preloadedState,
-    compose(
-      applyMiddleware(...middlewares),
-      window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-    ),
-  );
+  const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
+
+  const store = createStore(reducer, preloadedState, composeEnhancers(applyMiddleware(...middlewares)));
 
   const combineSaga = sagas => {
     const sagaNames = Object.keys(sagas);
